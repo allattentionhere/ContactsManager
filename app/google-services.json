@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "731394793494",
+    "firebase_url": "https://contactsmanager-a9edd.firebaseio.com",
+    "project_id": "contactsmanager-a9edd",
+    "storage_bucket": "contactsmanager-a9edd.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:731394793494:android:03415c85c5938766",
+        "android_client_info": {
+          "package_name": "com.allattentionhere.contactsmanager"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "731394793494-k7ava17tncv2tuukqiouq5ndm0aab4ae.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAVhjvJ4H8xmimpAnBzcwsUaOVXCeNxk_M"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
