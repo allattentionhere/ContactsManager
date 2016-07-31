@@ -50,6 +50,7 @@ public class AddContactActivity extends AppCompatActivity implements View.OnClic
     Person p;
     ConnectivityManager connMgr;
     NetworkInfo networkInfo;
+    boolean isSetImage = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -94,33 +95,38 @@ public class AddContactActivity extends AppCompatActivity implements View.OnClic
 
             case R.id.btn_save:
                 if (isValid()) {
-                    showDialog("Uploading Image...");
-                    FirebaseStorage storage = FirebaseStorage.getInstance();
-                    StorageReference fileRef = storage.getReferenceFromUrl("gs://contactsmanager-a9edd.appspot.com").child(System.currentTimeMillis() + ".jpg");
+                    if (isSetImage) {
+                        showDialog("Uploading Image...");
+                        FirebaseStorage storage = FirebaseStorage.getInstance();
+                        StorageReference fileRef = storage.getReferenceFromUrl("gs://contactsmanager-a9edd.appspot.com").child(System.currentTimeMillis() + ".jpg");
 
-                    img_contact.setDrawingCacheEnabled(true);
-                    img_contact.buildDrawingCache();
-                    Bitmap bitmap = img_contact.getDrawingCache();
-                    ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
-                    byte[] data = baos.toByteArray();
-                    UploadTask uploadTask = fileRef.putBytes(data);
-                    uploadTask.addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception exception) {
-                            // Handle unsuccessful uploads
-                            hideDialog();
-                            Log.d("exception", "e=" + exception.toString());
-                            Toast.makeText(AddContactActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
-                        }
-                    }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                        @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
-                            hideDialog();
-                            p = new Person(etxt_firstname.getText().toString(), etxt_mobile.getText().toString(), etxt_email.getText().toString(), etxt_lastname.getText().toString(), taskSnapshot.getDownloadUrl() + "");
-                            makeNetworkCallForSave(p);
-                        }
-                    });
+                        img_contact.setDrawingCacheEnabled(true);
+                        img_contact.buildDrawingCache();
+                        Bitmap bitmap = img_contact.getDrawingCache();
+                        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, baos);
+                        byte[] data = baos.toByteArray();
+                        UploadTask uploadTask = fileRef.putBytes(data);
+                        uploadTask.addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception exception) {
+                                // Handle unsuccessful uploads
+                                hideDialog();
+                                Log.d("exception", "e=" + exception.toString());
+                                Toast.makeText(AddContactActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                            }
+                        }).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                            @Override
+                            public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                                hideDialog();
+                                p = new Person(etxt_firstname.getText().toString(), etxt_mobile.getText().toString(), etxt_email.getText().toString(), etxt_lastname.getText().toString(), taskSnapshot.getDownloadUrl() + "");
+                                makeNetworkCallForSave(p);
+                            }
+                        });
+                    } else {
+                        p = new Person(etxt_firstname.getText().toString(), etxt_mobile.getText().toString(), etxt_email.getText().toString(), etxt_lastname.getText().toString(),"");
+                        makeNetworkCallForSave(p);
+                    }
 
                 }
                 break;
@@ -150,12 +156,14 @@ public class AddContactActivity extends AppCompatActivity implements View.OnClic
                 if (resultCode == RESULT_OK) {
                     Bitmap photo = (Bitmap) imageReturnedIntent.getExtras().get("data");
                     img_contact.setImageBitmap(photo);
+                    isSetImage = true;
                 }
                 break;
             case 1:
                 if (resultCode == RESULT_OK) {
                     Uri selectedImage = imageReturnedIntent.getData();
                     img_contact.setImageURI(selectedImage);
+                    isSetImage = true;
                 }
                 break;
         }
